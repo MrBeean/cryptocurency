@@ -1,4 +1,5 @@
 require_relative "coinmarket/parser"
+require_relative "coinmarket/calculator"
 
 module Coinmarket
   def self.run
@@ -8,5 +9,13 @@ end
 
 
 
-result = Coinmarket.run
-puts result.data[1] # Ожидается вывод Ethereum
+parser = Coinmarket.run
+names = parser.take_ten
+names << 'minexcoin'
+names.each do |name|
+  parser.save_currency(name)
+end
+minexcoin_cap = parser.currency['minexcoin'][1]
+calculator = Calculator.new(parser.currency)
+calculator.average(minexcoin_cap)
+puts "Cредневзвешенный кросс-курс MNX/$ = #{calculator.summ}"
