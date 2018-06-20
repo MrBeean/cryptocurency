@@ -2,11 +2,12 @@ require 'open-uri'
 require 'nokogiri'
 
 class Parser
-  attr_reader :data
+  attr_reader :data, :currency
 
   def initialize(url)
     @url = url
     @data = []
+    @currency = {}
     save_table(url)
   end
 
@@ -49,5 +50,34 @@ class Parser
       hash.compact!
       @data << hash
     end
+  end
+
+  def take_ten
+    ten = @data[0..9]
+    ten.map do |i|
+      if i['Name'].split.last.downcase == 'cash'
+        'bitcoin-cash'
+      else
+        i['Name'].split.last.downcase
+      end
+    end
+  end
+
+  def save_currency(name)
+    url = @url + "currencies/#{name}"
+
+    site = Nokogiri::HTML(open(url))
+    # p site.css('col-xs-6 col-sm-8 col-md-4 text-left')
+    usd = site.css('#quote_price')
+
+    if name == 'eos'
+      btc = site.xpath('/html/body/div[2]/div/div[1]/div[5]/div[2]/span[3]/span')
+      cap = site.xpath('/html/body/div[2]/div/div[1]/div[6]/div[1]/div[1]/div/span[1]/span[1]')
+    else
+      btc = site.xpath('/html/body/div[2]/div/div[1]/div[4]/div[2]/span[3]/span')
+      cap = site.xpath('/html/body/div[2]/div/div[1]/div[5]/div[1]/div[1]/div/span[1]/span[1]')
+    end
+
+    @currency[name] = [usd.text.split.first.to_f, btc.text.split.first.to_f, cap.text.split(',').join.to_i]
   end
 end
