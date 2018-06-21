@@ -1,3 +1,4 @@
+# Class который содержит математические вычисления
 class Calculator
   attr_reader :summ
 
@@ -7,6 +8,7 @@ class Calculator
     @cap_sum = calculate_cap_sum
   end
 
+  ## Метод расчитывающий средневзвешенный курс minexcoin
   def average(minexcoin)
     sum = []
     @currency.each_value do |value|
@@ -16,6 +18,7 @@ class Calculator
     @summ = minexcoin*sum.sum
   end
 
+  ## Метод для расчета суммы всех Market Cap
   def calculate_cap_sum
     all_cap = []
     @currency.delete('minexcoin')

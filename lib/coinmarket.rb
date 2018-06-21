@@ -18,4 +18,4 @@ end
 minexcoin_cap = parser.currency['minexcoin'][1]
 calculator = Calculator.new(parser.currency)
 calculator.average(minexcoin_cap)
-puts "Cредневзвешенный кросс-курс MNX/$ = #{calculator.summ}"
+puts "Средневзвешенный кросс-курс MNX/$ = #{calculator.summ}"
